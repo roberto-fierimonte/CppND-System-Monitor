@@ -3,6 +3,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <filesystem>
 
 #include "linux_parser.h"
 
@@ -46,23 +47,33 @@ string LinuxParser::Kernel() {
 }
 
 // BONUS: Update this to use std::filesystem
+// vector<int> LinuxParser::Pids() {
+//   vector<int> pids;
+//   DIR* directory = opendir(kProcDirectory.c_str());
+//   struct dirent* file;
+//   while ((file = readdir(directory)) != nullptr) {
+//     // Is this a directory?
+//     if (file->d_type == DT_DIR) {
+//       // Is every character of the name a digit?
+//       string filename(file->d_name);
+//       if (std::all_of(filename.begin(), filename.end(), isdigit)) {
+//         int pid = stoi(filename);
+//         pids.push_back(pid);
+//       }
+//     }
+//   }
+//   closedir(directory);
+//   return pids;
+// }
+
 vector<int> LinuxParser::Pids() {
   vector<int> pids;
-  DIR* directory = opendir(kProcDirectory.c_str());
-  struct dirent* file;
-  while ((file = readdir(directory)) != nullptr) {
-    // Is this a directory?
-    if (file->d_type == DT_DIR) {
-      // Is every character of the name a digit?
-      string filename(file->d_name);
-      if (std::all_of(filename.begin(), filename.end(), isdigit)) {
-        int pid = stoi(filename);
-        pids.push_back(pid);
-      }
+  for (std::filesystem::directory_entry const& dir_entry : std::filesystem::directory_iterator(kProcDirectory)) {
+    if ((dir_entry.is_directory()) && (std::all_of(dir_entry.path().filename().begin(), dir_entry.path().filename().end(), isdigit))) {
+      int pid = stoi(dir_entry.path().filename().string());
+      pids.push_back(pid);
     }
   }
-  closedir(directory);
-  return pids;
 }
 
 // TODO: Read and return the system memory utilization

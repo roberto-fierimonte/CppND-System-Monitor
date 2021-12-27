@@ -6,11 +6,11 @@
 #include <fstream>
 #include <iostream>
 #include <regex>
-#include <linux_parser.h>
 
 #include "process.h"
 #include "processor.h"
 #include "system.h"
+#include "linux_parser.h"
 
 using std::set;
 using std::size_t;
