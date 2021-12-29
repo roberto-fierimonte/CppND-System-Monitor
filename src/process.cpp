@@ -14,7 +14,6 @@ using std::vector;
 Process::Process(int pid) : pid_(pid) {
     user = LinuxParser::User(pid);
     command = LinuxParser::Command(pid);
-    path = LinuxParser::kProcDirectory + to_string(pid);
 }
 
 int Process::Pid() { 
@@ -30,18 +29,16 @@ string Process::Command() {
     return command; 
 }
 
-// TODO: Return this process's memory utilization
 string Process::Ram() { 
-    return string(); 
+    return LinuxParser::Ram(pid_); 
 }
 
 string Process::User() { 
     return user; 
 }
 
-// TODO: Return the age of this process (in seconds)
 long int Process::UpTime() { 
-    return 0; 
+    return LinuxParser::UpTime(pid_);
 }
 
 // TODO: Overload the "less than" comparison operator for Process objects
